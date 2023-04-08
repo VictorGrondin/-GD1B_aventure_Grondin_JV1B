@@ -5,15 +5,18 @@ var toucheE;
 var cursors;
 var gameOver;
 var collectitem;
+var nombrelaser=0;
 var item;
 var score = 0;
+var invincible=false;
 var laser;
+var player_health=30;
 var fire;
-var tirelaser_evil = true;
+
 var fireDelay = 200;
 var lastFired = 0;
 var player;
-var laser_evil;
+
 var keydash;
 var collide_trou;
 var enemy;
@@ -33,7 +36,7 @@ class Map1Scene extends Phaser.Scene {
         this.load.image('laser', 'assets/laser.png');
         this.load.image('enemy', 'assets/enemy.png');
         this.load.image('item', 'assets/item.png');
-        this.load.image('laser_evil', 'assets/laser_evil.png');
+        
         this.load.image('tilesetzelda', 'assets/tilesetzelda.png');
         this.load.tilemapTiledJSON("carte", "assets/mapzelda.json");
         
@@ -91,14 +94,14 @@ class Map1Scene extends Phaser.Scene {
         player.setCollideWorldBounds(false);
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
-        laser_evil = this.physics.add.sprite(1600, 800, 'laser_evil')
-      
         
+      
+        this.lasergroup=this.physics.add.group()
      
         toucheE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keydash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        this.physics.add.collider(laser, murs_terra,);
-        this.physics.add.collider(laser_evil, murs_terra);
+        
+       
         this.physics.add.collider(player, murs_déco);
         this.physics.add.collider(player, murs_terra);
 
@@ -169,24 +172,34 @@ class Map1Scene extends Phaser.Scene {
 
 
 
-        this.physics.add.collider(player, laser_evil, function () {
-            player.setTint(0xff0000);
-            setTimeout(() => {
-                player.clearTint()
-            }, 500);
-            player.health -= 10;
+        this.physics.add.collider(player, enemy, function () {
+            if (invincible == false) {
+                player.setTint("#ff0000")
+                invincible = true
+                player_health -= 10
+                setTimeout(() => {
+                    player.clearTint()
+                    invincible = false
+                }, 1000);
+            }
         }, null, this);
 
         // lorsque l'ennemi est tué, il laisse tomber un objet
-        this.physics.add.collider(laser, enemy, function () {
+        this.physics.add.collider(this.lasergroup, enemy, function () {
             enemy.disableBody(true, true);
-            laser_evil.setVelocityX(0);
-            laser_evil.setVelocityY(0);
+            
+            this.lasergroup.getChildren()[nombrelaser-1].destroy()
             canFire = false;
             item = this.engrenage.create(enemy.x , enemy.y,"item");
         }, null, this);
 
-       
+        this.physics.add.collider(this.lasergroup, murs_terra,function () {
+            
+            this.lasergroup.getChildren()[nombrelaser-1].destroy()
+            nombrelaser-=1
+            
+            
+        }, null, this);
 
 
 
@@ -266,7 +279,9 @@ update() {
 
 
    
-  
+  if(player_health==0||player_health<=0){
+    this.physics.pause()
+  } 
 
 
 
@@ -286,50 +301,38 @@ update() {
         enemy.setVelocityY(Math.sin(angle) * 150);
 
 
-        if (canFire) {
-            laser_evil.setVisible(true);
-            laser_evil.x = enemy.x;
-            laser_evil.y = enemy.y;
-            laser_evil.rotation = angle;
-            laser_evil.setVelocityX(Math.cos(angle) * 200);
-            laser_evil.setVelocityY(Math.sin(angle) * 200);
-            tirelaser_evil = false;
-            this.time.delayedCall(3000, function () { tirelaser_evil = true; }, [], this);
-        }
-    } else {
-
-        enemy.setVelocityX(0);
-        enemy.setVelocityY(0);
-        laser_evil.setVelocityX(0);
-        laser_evil.setVelocityY(0);
-        laser_evil.setVisible(false);
+        
+       
 
     }
     var time = this.time.now;
 
-    if (toucheE.isDown && time > lastFired && ( cursors.left.isdown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
-        laser.x = player.x;
-        laser.y = player.y;
-        laser.setActive(true);
-        laser.setVisible(true);
-    
+    if (toucheE.isDown && time > lastFired && ( cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
+        
+    nombrelaser+=1
         if (cursors.left.isDown) {
-          laser.body.velocity.x = -500;
-          laser.angle = 180;
+            this.lasergroup.create(player.x,player.y,"laser").body.velocity.x = -500;
+          
         } else if (cursors.right.isDown) {
-          laser.body.velocity.x = 500;
-          laser.angle = 0;
+            this.lasergroup.create(player.x,player.y,"laser").body.velocity.x = 500;
+          
         } else if (cursors.up.isDown) {
-          laser.body.velocity.y = -500;
-          laser.angle = -90;
+            this.lasergroup.create(player.x,player.y,"laser").setVelocityY(-500).angle = -90;
+          
+        
         } else if (cursors.down.isDown) {
-          laser.body.velocity.y = 500;
-          laser.angle = 90;
+            this.lasergroup.create(player.x,player.y,"laser").setVelocityY(500).angle = -90;
+          
+          
         }
     
         lastFired = time + fireDelay;
       }
+
     }
+
+
+
 }
 
 

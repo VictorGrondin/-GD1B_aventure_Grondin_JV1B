@@ -4,14 +4,14 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            debug: false
         }
     },
     input: { gamepad: true },
 
-    scene: [Menuaccueil,Map1Scene,Map2Scene]
+    scene: [Menuaccueil,Map1Scene,Map2Scene],
 
-
+    pixelArt:false
 
 };
 
