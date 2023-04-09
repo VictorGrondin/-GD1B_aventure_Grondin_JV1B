@@ -195,7 +195,7 @@ class Map1Scene extends Phaser.Scene {
             
             this.lasergroup.getChildren()[nombrelaser-1].destroy()
             canFire = false;
-            item = this.engrenage.create(this.champi.x , this.champi.y,"item");
+            item = this.engrenage.create(champi.x , champi.y,"item");
         }, null, this);
 
         this.physics.add.collider(this.lasergroup, murs_terra,function () {
@@ -209,10 +209,10 @@ class Map1Scene extends Phaser.Scene {
 
 
         
-        this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this);// récupération de l'item engrenage 
+        this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
         
         function collectengrenage(player, engrenage) {
-            engrenage.disableBody(true, true); // 
+            engrenage.disableBody(true, true); 
             score += 1; //augmente le score de 1
           
         }
@@ -225,7 +225,7 @@ class Map1Scene extends Phaser.Scene {
 update() {
     if (gameOver) { return; }
 
-    if (score == 1) {
+    if (score == 15) {
         trou_debloque = true
     }
     if (trou_debloque == true) {
@@ -285,6 +285,7 @@ update() {
    
   if(player_health==0||player_health<=0){
     this.physics.pause()
+    this.scene.start('gameover' );
   } 
 
 
@@ -309,10 +310,11 @@ update() {
     
 
         //le joueur tire des lasers dans toutes les directions 
+        var time = this.time.now;
 
-    if (toucheE.isDown && time > lastFired && ( cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
+     if(toucheE.isDown && time > lastFired && ( cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
         
-    nombrelaser+=1
+        nombrelaser+=1
         if (cursors.left.isDown) {
             this.lasergroup.create(player.x,player.y,"laser").body.velocity.x = -500;
           
