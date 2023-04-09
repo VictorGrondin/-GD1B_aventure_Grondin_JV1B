@@ -12,7 +12,7 @@ var invincible=false;
 var laser;
 var player_health=30;
 var fire;
-
+var time;
 var fireDelay = 200;
 var lastFired = 0;
 var player;
@@ -308,7 +308,7 @@ update() {
       });
     
 
-    //le joueur tire des lasers dans toutes les directions 
+        //le joueur tire des lasers dans toutes les directions 
 
     if (toucheE.isDown && time > lastFired && ( cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
         
