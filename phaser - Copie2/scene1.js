@@ -86,7 +86,7 @@ class Map1Scene extends Phaser.Scene {
             tileset
         );
 
-
+//------------------------------------------------------------------------------------------------------
         murs_déco.setCollisionByProperty({ solide: true });
         murs_terra.setCollisionByProperty({ solide: true });
         trou.setCollisionByProperty({ solide: true });
@@ -120,18 +120,26 @@ class Map1Scene extends Phaser.Scene {
         this.cameras.main.zoom = 1.5;
 
         this.engrenage= this.physics.add.group({immovable : true ,allowGravity : false});
-
         this.calque_engrenage = carteDuNiveau.getObjectLayer("engrenage");
         this.calque_engrenage.objects.forEach(calque_engrenage => {
             this.inutile = this.engrenage.create(calque_engrenage.x+15,calque_engrenage.y-16,"item"); 
         });
+
+
+
+        this.champi= this.physics.add.group({immovable : true ,allowGravity : false});
+        this.calque_champi = carteDuNiveau.getObjectLayer("champi");
+        this.calque_champi.objects.forEach(calque_champi => {
+            this.evil = this.champi.create(calque_champi.x+15,calque_champi.y-16,"enemy");
+        });
+       
 
         // Lorsque le joueur entre dans la zone de téléportation, téléportez-le à la première carte
         this.physics.add.collider(player, teleporterZone1, () => {
             this.scene.start('Map2Scene', { x: 2100, y: 1100 });
         });
 
-
+//----------------------------------------------------------------------------------------------------------------
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('perso', { start: 0, end: 3 }),
@@ -165,14 +173,11 @@ class Map1Scene extends Phaser.Scene {
 
         cursors = this.input.keyboard.createCursorKeys();
 
+//------------------------------------------------------------------------------------------------------
 
-
-        enemy = this.physics.add.sprite(2600, 1200, 'enemy');
-        this.physics.add.collider(enemy, murs_terra,);
-
-
-
-        this.physics.add.collider(player, enemy, function () {
+        
+        this.physics.add.collider(this.champi, murs_terra,);
+        this.physics.add.collider(player, this.champi, function () {
             if (invincible == false) {
                 player.setTint("#ff0000")
                 invincible = true
@@ -185,12 +190,12 @@ class Map1Scene extends Phaser.Scene {
         }, null, this);
 
         // lorsque l'ennemi est tué, il laisse tomber un objet
-        this.physics.add.collider(this.lasergroup, enemy, function () {
-            enemy.disableBody(true, true);
+        this.physics.add.collider(this.lasergroup, this.champi, function () {
+            this.champi.disableBody(true, true);
             
             this.lasergroup.getChildren()[nombrelaser-1].destroy()
             canFire = false;
-            item = this.engrenage.create(enemy.x , enemy.y,"item");
+            item = this.engrenage.create(this.champi.x , this.champi.y,"item");
         }, null, this);
 
         this.physics.add.collider(this.lasergroup, murs_terra,function () {
@@ -206,7 +211,6 @@ class Map1Scene extends Phaser.Scene {
         
         this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this);// récupération de l'item engrenage 
         
-
         function collectengrenage(player, engrenage) {
             engrenage.disableBody(true, true); // 
             score += 1; //augmente le score de 1
@@ -215,7 +219,7 @@ class Map1Scene extends Phaser.Scene {
     }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------------------
 
 
 update() {
@@ -294,18 +298,17 @@ update() {
     // faire s'approcher l'ennemi du joueur si le joueur est à moins de 150 pixels de l'ennemi
 
 
-    if (Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y) < 150) {
+    this.champi.getChildren().forEach(champi => {
+        const distance = Phaser.Math.Distance.Between(champi.x, champi.y, player.x, player.y);
+        if (distance < 150) {
+          champi.setVelocity(player.x - champi.x, player.y - champi.y);
+        } else {
+          champi.setVelocity(0);
+        }
+      });
+    
 
-        var angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, player.x, player.y);
-        enemy.setVelocityX(Math.cos(angle) * 150);
-        enemy.setVelocityY(Math.sin(angle) * 150);
-
-
-        
-       
-
-    }
-    var time = this.time.now;
+    //le joueur tire des lasers dans toutes les directions 
 
     if (toucheE.isDown && time > lastFired && ( cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
         
