@@ -224,7 +224,7 @@ class Map2Scene extends Phaser.Scene {
 
 
 
-eeeee
+
 
         // faire s'approcher l'ennemi du joueur si le joueur est à moins de 150 pixels de l'ennemi
 
