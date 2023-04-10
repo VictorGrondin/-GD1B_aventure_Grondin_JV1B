@@ -16,7 +16,7 @@ var time;
 var fireDelay = 200;
 var lastFired = 0;
 var player;
-
+var scoreText
 var keydash;
 var collide_trou;
 var enemy;
@@ -97,6 +97,10 @@ class Map1Scene extends Phaser.Scene {
         trou.setCollisionByProperty({ solide: true });
         teleporterZone1.setCollisionByProperty({ solide: true });
         player.setCollideWorldBounds(false);
+
+        scoreText=this.add.text(355, 150,'score: 0',{fontSize:'32px',fill:'#000'});
+        //affiche un texte à l’écran, pour le score
+
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
 
@@ -237,6 +241,7 @@ class Map1Scene extends Phaser.Scene {
         function collectengrenage(player, engrenage) {
             engrenage.disableBody(true, true);
             score += 1; //augmente le score de 1
+            scoreText.setText('Score: ' + score); //met à jour l’affichage du score
 
         }
 

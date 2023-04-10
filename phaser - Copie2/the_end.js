@@ -1,8 +1,8 @@
 
-class theend extends Phaser.Scene {
+class The_end extends Phaser.Scene {
 
     constructor() {
-      super({ key: 'theend' });
+      super({ key: 'The_end' });
     }
   
   
