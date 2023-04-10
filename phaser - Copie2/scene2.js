@@ -12,10 +12,10 @@ class Map2Scene extends Phaser.Scene {
 
         this.load.spritesheet('perso', 'assets/persozelda.png',
             { frameWidth: 32, frameHeight: 32 });
-            this.load.image('laser', 'assets/laser.png');
-            this.load.image('enemy', 'assets/enemy.png');
-            this.load.image('item', 'assets/item.png');
-            this.load.spritesheet('boulon', 'assets/boulon.png',
+        this.load.image('laser', 'assets/laser.png');
+        this.load.image('enemy', 'assets/enemy.png');
+        this.load.image('item', 'assets/item.png');
+        this.load.spritesheet('boulon', 'assets/boulon.png',
             { frameWidth: 166, frameHeight: 64 });
         this.load.image('tilesetzelda', 'assets/tilesetzelda.png');
         this.load.tilemapTiledJSON('dunjon', 'assets/dunjon.json');
@@ -35,14 +35,14 @@ class Map2Scene extends Phaser.Scene {
         const vaiseau = carteDuNiveau2.createLayer(
             "vaiseau",
             tileset
-                );
+        );
         const chemin = carteDuNiveau2.createLayer(
             "chemin",
             tileset
         );
 
-        const trous = carteDuNiveau2.createLayer(
-            "trous",
+        const trou = carteDuNiveau2.createLayer(
+            "trou",
             tileset
         );
 
@@ -50,7 +50,7 @@ class Map2Scene extends Phaser.Scene {
             "murs",
             tileset
         );
-        
+
         const teleporterZone2 = carteDuNiveau2.createLayer(
             "teleporterZone2",
             tileset
@@ -59,25 +59,33 @@ class Map2Scene extends Phaser.Scene {
         player = this.physics.add.sprite(1000, 3000, 'perso');
         teleporterZone2.setCollisionByProperty({ solide: true });
         murs.setCollisionByProperty({ solide: true });
-        trous.setCollisionByProperty({ solide: true });
+        
         player.setCollideWorldBounds(false);
         this.physics.add.collider(player, murs);
+        this.physics.add.collider(player, vaiseau);
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
-        
-    
-        
-     
+
+        //création groupe laser
+        this.lasergroup = this.physics.add.group()
+
+        // les touches
         toucheE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keydash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        this.physics.add.collider(laser, murs);
+       
+     
+
+
+        collide_trou = this.physics.add.collider(player, trou, Contacte_trou);
+        function Contacte_trou() {
+            trouu = true
+        }
         
 
 
-        
         //la vie du perso qui s'affiche
         this.vie = this.physics.add.sprite(365, 190, 'boulon').setScale(0.5).setScrollFactor(0);
-
+//-----------------------------------------------------------------------------------------------
         // redimentionnement du monde avec les dimensions calculées via tiled
         this.physics.world.setBounds(0, 0, 91204, 91204);
         // ajout du champs de la caméra de taille identique à celle du monde
@@ -85,16 +93,19 @@ class Map2Scene extends Phaser.Scene {
         // ancrage de la caméra sur le joueur
         this.cameras.main.startFollow(player);
         this.cameras.main.zoom = 1.5;
-//----------------------------------------------------------------------------------------------------------------
-        
-
+        //----------------------------------------------------------------------------------------------------------------
+        this.engrenage = this.physics.add.group({ immovable: true, allowGravity: false });
+        this.calque_engrenage = carteDuNiveau2.getObjectLayer("engrenage");
+        this.calque_engrenage.objects.forEach(calque_engrenage => {
+            this.inutile = this.engrenage.create(calque_engrenage.x + 15, calque_engrenage.y - 16, "item");
+        });
 
         this.champi = this.physics.add.group({ immovable: true, allowGravity: false });
         this.calque_champi = carteDuNiveau2.getObjectLayer("champi");
         this.calque_champi.objects.forEach(calque_champi => {
             this.evil = this.champi.create(calque_champi.x + 15, calque_champi.y - 16, "enemy");
         });
-//--------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------
 
         // Lorsque le joueur entre dans la zone de téléportation, téléportez-le à la première carte
         this.physics.add.collider(player, teleporterZone2, () => {
@@ -106,7 +117,7 @@ class Map2Scene extends Phaser.Scene {
         });
 
 
-        
+
 
         player.setCollideWorldBounds(true);
 
@@ -144,9 +155,9 @@ class Map2Scene extends Phaser.Scene {
         });
 
 
-        
 
-        
+
+
         this.anims.create({
             key: 'vie_3',
             frames: this.anims.generateFrameNumbers('boulon', { start: 2, end: 2 }),
@@ -155,22 +166,22 @@ class Map2Scene extends Phaser.Scene {
         });
 
         this.anims.create({
-        key: 'vie_2',
-        frames: this.anims.generateFrameNumbers('boulon', { start: 1, end: 1 }),
-        frameRate: 1,
-        repeat: -1
+            key: 'vie_2',
+            frames: this.anims.generateFrameNumbers('boulon', { start: 1, end: 1 }),
+            frameRate: 1,
+            repeat: -1
         });
 
         this.anims.create({
-        key: 'vie_1',
-        frames: this.anims.generateFrameNumbers('boulon', { start: 0, end: 0 }),
-        frameRate: 1,
-        repeat: -1
+            key: 'vie_1',
+            frames: this.anims.generateFrameNumbers('boulon', { start: 0, end: 0 }),
+            frameRate: 1,
+            repeat: -1
         });
 
-    //------------------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------
 
-
+        this.physics.add.collider(this.champi, trou,);
         this.physics.add.collider(this.champi, murs,);
         this.physics.add.collider(player, this.champi, function () {
             if (invincible == false) {
@@ -183,7 +194,7 @@ class Map2Scene extends Phaser.Scene {
                 }, 1000);
             }
         }, null, this);
-        
+
         // lorsque l'ennemi est tué, il laisse tomber un objet
         this.physics.add.overlap(this.lasergroup, this.champi, killchampi, null, this);
         function killchampi(player, champi) {
@@ -196,7 +207,7 @@ class Map2Scene extends Phaser.Scene {
             item = this.engrenage.create(champi.x, champi.y, "item");
         }
 
-       
+
 
         this.physics.add.collider(this.lasergroup, murs, function () {
 
@@ -207,26 +218,26 @@ class Map2Scene extends Phaser.Scene {
         }, null, this);
 
     //---------------------------------------------------------------------------------------------------------------------------------
-    
 
-    this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
-    
-    function collectengrenage(player, engrenage) {
-        engrenage.disableBody(true, true);
-        score += 1; //augmente le score de 1
-        scoreText.setText('Score: ' + score); //met à jour l’affichage du score
+
+        this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
+
+        function collectengrenage(player, engrenage) {
+            engrenage.disableBody(true, true);
+            score += 1; //augmente le score de 1
+            scoreText.setText('Score: ' + score); //met à jour l’affichage du score
+
+        }
+        scoreText = this.add.text(365, 190, 'score: 0', { fontSize: '32px', fill: '#000' });
+        //affiche un texte à l’écran, pour le score
 
     }
-    scoreText=this.add.text(365, 190,'score: 0',{fontSize:'32px',fill:'#000'});
-    //affiche un texte à l’écran, pour le score
-    
-}
-        
-//----------------------------------------------------------------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------------------------------------------------------------
 
 
     update() {
-      
+
         if (player_health == 30) {
             this.vie.anims.play("vie_3", true);
         }
@@ -243,7 +254,7 @@ class Map2Scene extends Phaser.Scene {
         if (gameOver) { return; }
 
         if (score == 15) {
-            trous_debloque = true
+            trou_debloque = true
         }
         if (trou_debloque == true) {
             if (trouu == true) {
@@ -306,7 +317,7 @@ class Map2Scene extends Phaser.Scene {
         }
 
 
-        
+
 
 
 
