@@ -35,6 +35,11 @@ class Map2Scene extends Phaser.Scene {
 
         this.load.spritesheet('perso', 'assets/persozelda.png',
             { frameWidth: 32, frameHeight: 32 });
+            this.load.image('laser', 'assets/laser.png');
+            this.load.image('enemy', 'assets/enemy.png');
+            this.load.image('item', 'assets/item.png');
+            this.load.spritesheet('boulon', 'assets/boulon.png',
+            { frameWidth: 166, frameHeight: 64 });
         this.load.image('tilesetzelda', 'assets/tilesetzelda.png');
         this.load.tilemapTiledJSON('dunjon', 'assets/dunjon.json');
     }
@@ -78,9 +83,9 @@ class Map2Scene extends Phaser.Scene {
         this.physics.add.collider(player, murs);
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
-        laser_evil = this.physics.add.sprite(1600, 800, 'laser_evil')
-      
         
+      
+        this.lasergroup = this.physics.add.group()
      
         toucheE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keydash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -90,7 +95,8 @@ class Map2Scene extends Phaser.Scene {
 
 
 
-
+        //la vie du perso qui s'affiche
+        this.vie = this.physics.add.sprite(365, 190, 'boulon').setScale(0.5).setScrollFactor(0);
 
         // redimentionnement du monde avec les dimensions calculées via tiled
         this.physics.world.setBounds(0, 0, 91204, 91204);
@@ -101,7 +107,7 @@ class Map2Scene extends Phaser.Scene {
         this.cameras.main.zoom = 1.5;
 //----------------------------------------------------------------------------------------------------------------
         this.engrenage = this.physics.add.group({ immovable: true, allowGravity: false });
-        this.calque_engrenage = carteDuNiveau.getObjectLayer("engrenage");
+        this.calque_engrenage = carteDuNiveau2.getObjectLayer("engrenage");
         this.calque_engrenage.objects.forEach(calque_engrenage => {
             this.inutile = this.engrenage.create(calque_engrenage.x + 15, calque_engrenage.y - 16, "item");
         });
@@ -109,7 +115,7 @@ class Map2Scene extends Phaser.Scene {
 
 
         this.champi = this.physics.add.group({ immovable: true, allowGravity: false });
-        this.calque_champi = carteDuNiveau.getObjectLayer("champi");
+        this.calque_champi = carteDuNiveau2.getObjectLayer("champi");
         this.calque_champi.objects.forEach(calque_champi => {
             this.evil = this.champi.create(calque_champi.x + 15, calque_champi.y - 16, "enemy");
         });
@@ -224,7 +230,7 @@ class Map2Scene extends Phaser.Scene {
 
         }
 
-        this.physics.add.collider(this.lasergroup, murs_terra, function () {
+        this.physics.add.collider(this.lasergroup, murs, function () {
 
             this.lasergroup.getChildren()[nombrelaser - 1].destroy()
             nombrelaser -= 1

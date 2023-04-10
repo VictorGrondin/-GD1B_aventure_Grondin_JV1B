@@ -209,7 +209,7 @@ class Map1Scene extends Phaser.Scene {
 
         //------------------------------------------------------------------------------------------------------
 
-
+        this.physics.add.collider(this.champi, trou,);
         this.physics.add.collider(this.champi, murs_terra,);
         this.physics.add.collider(player, this.champi, function () {
             if (invincible == false) {
@@ -263,7 +263,7 @@ class Map1Scene extends Phaser.Scene {
             scoreText.setText('Score: ' + score); //met à jour l’affichage du score
 
         }
-        scoreText=this.add.text(330, 240,'score: 0',{ fontFamily: 'Georgia, "Goudy Bookletter 1911",fill:'#ffffff', Times, serif', fontSize: 40 }).setScale(0.6).setScrollFactor(0)};
+        scoreText=this.add.text(330, 240,'score: 0',{ fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: 40 }).setScale(0.6).setScrollFactor(0)};
     
     //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -286,7 +286,7 @@ class Map1Scene extends Phaser.Scene {
 
         if (gameOver) { return; }
 
-        if (score == 15) {
+        if (score == 0) {
             trou_debloque = true
         }
         if (trou_debloque == true) {
