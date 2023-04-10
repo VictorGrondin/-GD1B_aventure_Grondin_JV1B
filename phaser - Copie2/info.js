@@ -6,14 +6,14 @@ class info extends Phaser.Scene {
   
   
     preload() {
-      this.load.image('texte', 'assets/texte');
+      this.load.image('text', 'assets/texte.png');
       
       
     }
   
     create() {
-      const text = this.add.image(640, 360, "texte");// Ajoute le texte 
-      
+      const text = this.add.image(640, 360, "text");// Ajoute le texte 
+      text.setScale()
       
   
        

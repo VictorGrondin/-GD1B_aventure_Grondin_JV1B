@@ -27,13 +27,13 @@ class Menuaccueil extends Phaser.Scene {
   preload() {
     this.load.image('background', 'assets/background.png');
     this.load.image('play', 'assets/play.png');
-    this.load.image('credit', 'assets/credit.png');
+    this.load.image('info', 'assets/info.png');
   }
 
   create() {
     const bg = this.add.image(640, 360, "background");// Ajouter l'image de l'écran d'accueil
-    const play_bt = this.add.image(640, 400, "play").setInteractive();// Ajouter les boutons
-    const credit_bt = this.add.image(640, 500, "credit");
+    const play_bt = this.add.image(640, 400, "play").setInteractive();// Ajoute le bouton
+    const info_bt = this.add.image(640, 500, "info").setInteractive();// Ajoute le bouton
      bg.setScale()
 
     // Ajouter des événements pour les boutons
@@ -41,8 +41,8 @@ class Menuaccueil extends Phaser.Scene {
       this.scene.start('Map1Scene');
     });
 
-    credit_bt.on('pointerdown', () => {
-      this.scene.start('Map1Scene');
+    info_bt.on('pointerdown', () => {
+      this.scene.start('info');
     });
   }
 
