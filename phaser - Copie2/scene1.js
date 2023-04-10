@@ -263,10 +263,8 @@ class Map1Scene extends Phaser.Scene {
             scoreText.setText('Score: ' + score); //met à jour l’affichage du score
 
         }
-        scoreText=this.add.text(365, 190,'score: 0',{fontSize:'32px',fill:'#000'});
-        //affiche un texte à l’écran, pour le score
-}
-
+        scoreText=this.add.text(330, 240,'score: 0',{ fontFamily: 'Georgia, "Goudy Bookletter 1911",fill:'#ffffff', Times, serif', fontSize: 40 }).setScale(0.6).setScrollFactor(0)};
+    
     //----------------------------------------------------------------------------------------------------------------------------------
 
 

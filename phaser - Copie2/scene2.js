@@ -1,21 +1,27 @@
-
+var trou_debloque = false; // LE METTRE EN TRUE QUAND LE R EST DEBLOQUE
+var trouu = false;
+var dash = false;
+var toucheE;
 var cursors;
 var gameOver;
-var collectitem
-var item
+var collectitem;
+var nombrelaser = 0;
+var item;
 var score = 0;
+var invincible = false;
 var laser;
+var player_health = 30;
 var fire;
-var canFire = true;
-var lasers;
+var time;
+var fireDelay = 200;
+var lastFired = 0;
 var player;
-var laser_evil;
+var scoreText
 var keydash;
 var collide_trou;
 var enemy;
 gameOver = false;
 sens = 1;
-
 
 class Map2Scene extends Phaser.Scene {
 
