@@ -98,18 +98,17 @@ class Map1Scene extends Phaser.Scene {
         teleporterZone1.setCollisionByProperty({ solide: true });
         player.setCollideWorldBounds(false);
 
-        
-
-
+    
+        //création laser
         laser = this.physics.add.sprite(1600, 800, 'laser')
 
-
+        //création groupe laser
         this.lasergroup = this.physics.add.group()
-
+        // les touches
         toucheE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keydash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
-
+        //collision avec les claques
         this.physics.add.collider(player, murs_déco);
         this.physics.add.collider(player, murs_terra);
 
@@ -118,6 +117,7 @@ class Map1Scene extends Phaser.Scene {
         function Contacte_trou() {
             trouu = true
         }
+        //la vie du perso qui s'affiche
         this.vie = this.physics.add.sprite(365, 190, 'boulon').setScale(0.5).setScrollFactor(0);
 
 //-------------------------------------------------------------------------------------------------------
@@ -252,7 +252,7 @@ class Map1Scene extends Phaser.Scene {
 
         }, null, this);
 
-
+//---------------------------------------------------------------------------------------------------------------------------------
 
 
         this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
