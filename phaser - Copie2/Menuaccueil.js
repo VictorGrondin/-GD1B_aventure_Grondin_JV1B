@@ -41,10 +41,10 @@ class Menuaccueil extends Phaser.Scene {
       this.scene.start('Map1Scene');
     });
 
-    //credit_bt.on('pointerdown', () => {
-    //  // Ajouter une scène pour les options si nécessaire
-    //});
+    credit_bt.on('pointerdown', () => {
+      this.scene.start('Map1Scene');
+    });
   }
-  uptade() { }
+
 
 }

@@ -20,11 +20,11 @@ class Gameover extends Phaser.Scene {
   }
 
   create() {
-    const go = this.add.image(640, 360, "go");// Ajouter l'image de l'écran d'accueil
-    const restart_bt = this.add.image(640, 400, "restart").setInteractive();// Ajouter les boutons
+    const go = this.add.image(640, 360, "go");// Ajouter l'image de l'écran de fin 
+    const restart_bt = this.add.image(640, 400, "restart").setInteractive();// Ajoute le bouton restart
     
 
-     //Ajouter des événements pour les boutons
+     //Ajoute  événements pour le boutone
     restart_bt.on('pointerdown', () => {
       this.scene.start('Menuaccueil');
     });

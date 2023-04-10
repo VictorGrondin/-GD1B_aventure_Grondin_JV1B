@@ -1,27 +1,4 @@
-var trou_debloque = false; // LE METTRE EN TRUE QUAND LE R EST DEBLOQUE
-var trouu = false;
-var dash = false;
-var toucheE;
-var cursors;
-var gameOver;
-var collectitem;
-var nombrelaser = 0;
-var item;
-var score = 0;
-var invincible = false;
-var laser;
-var player_health = 30;
-var fire;
-var time;
-var fireDelay = 200;
-var lastFired = 0;
-var player;
-var scoreText
-var keydash;
-var collide_trou;
-var enemy;
-gameOver = false;
-sens = 1;
+
 
 class Map2Scene extends Phaser.Scene {
 
@@ -55,14 +32,17 @@ class Map2Scene extends Phaser.Scene {
             "dunjon",
             "tilesetzelda"
         );
-
+        const vaiseau = carteDuNiveau2.createLayer(
+            "vaiseau",
+            tileset
+                );
         const chemin = carteDuNiveau2.createLayer(
             "chemin",
             tileset
         );
 
-        const vaisseau = carteDuNiveau2.createLayer(
-            "vaisseau",
+        const trous = carteDuNiveau2.createLayer(
+            "trous",
             tileset
         );
 
@@ -70,7 +50,7 @@ class Map2Scene extends Phaser.Scene {
             "murs",
             tileset
         );
-
+        
         const teleporterZone2 = carteDuNiveau2.createLayer(
             "teleporterZone2",
             tileset
@@ -79,22 +59,22 @@ class Map2Scene extends Phaser.Scene {
         player = this.physics.add.sprite(1000, 3000, 'perso');
         teleporterZone2.setCollisionByProperty({ solide: true });
         murs.setCollisionByProperty({ solide: true });
+        trous.setCollisionByProperty({ solide: true });
         player.setCollideWorldBounds(false);
         this.physics.add.collider(player, murs);
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
         
-      
-        this.lasergroup = this.physics.add.group()
+    
+        
      
         toucheE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keydash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        this.physics.add.collider(laser, murs,);
-        this.physics.add.collider(laser_evil, murs);
+        this.physics.add.collider(laser, murs);
+        
 
 
-
-
+        
         //la vie du perso qui s'affiche
         this.vie = this.physics.add.sprite(365, 190, 'boulon').setScale(0.5).setScrollFactor(0);
 
@@ -106,12 +86,7 @@ class Map2Scene extends Phaser.Scene {
         this.cameras.main.startFollow(player);
         this.cameras.main.zoom = 1.5;
 //----------------------------------------------------------------------------------------------------------------
-        this.engrenage = this.physics.add.group({ immovable: true, allowGravity: false });
-        this.calque_engrenage = carteDuNiveau2.getObjectLayer("engrenage");
-        this.calque_engrenage.objects.forEach(calque_engrenage => {
-            this.inutile = this.engrenage.create(calque_engrenage.x + 15, calque_engrenage.y - 16, "item");
-        });
-
+        
 
 
         this.champi = this.physics.add.group({ immovable: true, allowGravity: false });
@@ -126,12 +101,12 @@ class Map2Scene extends Phaser.Scene {
             this.scene.start('Map1Scene', { x: 300, y: 300 });
         });
 
-        this.physics.add.collider(player, vaisseau, () => {
+        this.physics.add.collider(player, vaiseau, () => {
             this.scene.start('The_end')
         });
 
 
-       
+        
 
         player.setCollideWorldBounds(true);
 
@@ -169,7 +144,7 @@ class Map2Scene extends Phaser.Scene {
         });
 
 
-        cursors = this.input.keyboard.createCursorKeys();
+        
 
         
         this.anims.create({
@@ -208,7 +183,7 @@ class Map2Scene extends Phaser.Scene {
                 }, 1000);
             }
         }, null, this);
-
+        
         // lorsque l'ennemi est tué, il laisse tomber un objet
         this.physics.add.overlap(this.lasergroup, this.champi, killchampi, null, this);
         function killchampi(player, champi) {
@@ -221,14 +196,7 @@ class Map2Scene extends Phaser.Scene {
             item = this.engrenage.create(champi.x, champi.y, "item");
         }
 
-        this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
-
-        function collectengrenage(player, engrenage) {
-            engrenage.disableBody(true, true);
-            score += 1; //augmente le score de 1
-            scoreText.setText('Score: ' + score); //met à jour l’affichage du score
-
-        }
+       
 
         this.physics.add.collider(this.lasergroup, murs, function () {
 
@@ -239,10 +207,10 @@ class Map2Scene extends Phaser.Scene {
         }, null, this);
 
     //---------------------------------------------------------------------------------------------------------------------------------
-
+    
 
     this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
-
+    
     function collectengrenage(player, engrenage) {
         engrenage.disableBody(true, true);
         score += 1; //augmente le score de 1
@@ -251,8 +219,9 @@ class Map2Scene extends Phaser.Scene {
     }
     scoreText=this.add.text(365, 190,'score: 0',{fontSize:'32px',fill:'#000'});
     //affiche un texte à l’écran, pour le score
+    
 }
-
+        
 //----------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -274,7 +243,7 @@ class Map2Scene extends Phaser.Scene {
         if (gameOver) { return; }
 
         if (score == 15) {
-            trou_debloque = true
+            trous_debloque = true
         }
         if (trou_debloque == true) {
             if (trouu == true) {
@@ -337,8 +306,7 @@ class Map2Scene extends Phaser.Scene {
         }
 
 
-
-
+        
 
 
 

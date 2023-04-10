@@ -147,7 +147,7 @@ class Map1Scene extends Phaser.Scene {
         // Lorsque le joueur entre dans la zone de téléportation, téléportez-le à la première carte
         this.physics.add.collider(player, teleporterZone1, () => {
             this.scene.start('Map2Scene', { x: 2100, y: 1100 });
-        });
+        },null,this);
 
         //----------------------------------------------------------------------------------------------------------------
         this.anims.create({
