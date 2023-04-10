@@ -135,8 +135,6 @@ class Map1Scene extends Phaser.Scene {
             this.inutile = this.engrenage.create(calque_engrenage.x + 15, calque_engrenage.y - 16, "item");
         });
 
-
-
         this.champi = this.physics.add.group({ immovable: true, allowGravity: false });
         this.calque_champi = carteDuNiveau.getObjectLayer("champi");
         this.calque_champi.objects.forEach(calque_champi => {

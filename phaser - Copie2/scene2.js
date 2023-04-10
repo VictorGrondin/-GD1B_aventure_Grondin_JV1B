@@ -32,15 +32,15 @@ class Map2Scene extends Phaser.Scene {
             "dunjon",
             "tilesetzelda"
         );
-        const vaiseau = carteDuNiveau2.createLayer(
-            "vaiseau",
-            tileset
-        );
+        
         const chemin = carteDuNiveau2.createLayer(
             "chemin",
             tileset
         );
-
+        const vaiseau = carteDuNiveau2.createLayer(
+                "vaiseau",
+                tileset
+                );
         const trou = carteDuNiveau2.createLayer(
             "trou",
             tileset
@@ -59,7 +59,7 @@ class Map2Scene extends Phaser.Scene {
         player = this.physics.add.sprite(1000, 3000, 'perso');
         teleporterZone2.setCollisionByProperty({ solide: true });
         murs.setCollisionByProperty({ solide: true });
-        
+        vaiseau.setCollisionByProperty({ solide: true });
         player.setCollideWorldBounds(false);
         this.physics.add.collider(player, murs);
         this.physics.add.collider(player, vaiseau);
@@ -113,7 +113,7 @@ class Map2Scene extends Phaser.Scene {
         });
 
         this.physics.add.collider(player, vaiseau, () => {
-            this.scene.start('The_end')
+            this.scene.start('Theend');
         });
 
 
