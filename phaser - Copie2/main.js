@@ -9,7 +9,7 @@ var config = {
     },
     input: { gamepad: true },
 
-    scene: [Menuaccueil,Map1Scene,Map2Scene,Gameover,the_end],
+    scene: [Menuaccueil,Map1Scene,Map2Scene,Gameover,the_end,],
 
     pixelArt:false
 
