@@ -284,7 +284,7 @@ class Map1Scene extends Phaser.Scene {
 
         if (gameOver) { return; }
 
-        if (score == 0) {
+        if (score == 15) {
             trou_debloque = true
         }
         if (trou_debloque == true) {
