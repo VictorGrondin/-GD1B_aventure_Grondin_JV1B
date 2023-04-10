@@ -50,6 +50,11 @@ class Map2Scene extends Phaser.Scene {
             tileset
         );
 
+        const vaisseau = carteDuNiveau2.createLayer(
+            "vaisseau",
+            tileset
+        );
+
         const murs = carteDuNiveau2.createLayer(
             "murs",
             tileset
@@ -94,6 +99,11 @@ class Map2Scene extends Phaser.Scene {
         this.physics.add.collider(player, teleporterZone2, () => {
             this.scene.start('Map1Scene', { x: 300, y: 300 });
         });
+
+        this.physics.add.collider(player, vaisseau, () => {
+            this.scene.start('Map1Scene')
+        });
+
 
         // Ajouter le joueur à la deuxième carte
 
