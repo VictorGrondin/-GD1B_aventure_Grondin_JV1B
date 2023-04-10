@@ -98,8 +98,7 @@ class Map1Scene extends Phaser.Scene {
         teleporterZone1.setCollisionByProperty({ solide: true });
         player.setCollideWorldBounds(false);
 
-        scoreText=this.add.text(355, 150,'score: 0',{fontSize:'32px',fill:'#000'});
-        //affiche un texte à l’écran, pour le score
+        
 
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
@@ -121,7 +120,7 @@ class Map1Scene extends Phaser.Scene {
         }
         this.vie = this.physics.add.sprite(365, 190, 'boulon').setScale(0.5).setScrollFactor(0);
 
-
+//-------------------------------------------------------------------------------------------------------
         // redimentionnement du monde avec les dimensions calculées via tiled
         this.physics.world.setBounds(0, 0, 91204, 91204);
         //  ajout du champs de la caméra de taille identique à celle du monde
@@ -129,7 +128,7 @@ class Map1Scene extends Phaser.Scene {
         // ancrage de la caméra sur le joueur
         this.cameras.main.startFollow(player);
         this.cameras.main.zoom = 1.5;
-
+//------------------------------------------------------------------------------------------------------------
         this.engrenage = this.physics.add.group({ immovable: true, allowGravity: false });
         this.calque_engrenage = carteDuNiveau.getObjectLayer("engrenage");
         this.calque_engrenage.objects.forEach(calque_engrenage => {
@@ -143,7 +142,7 @@ class Map1Scene extends Phaser.Scene {
         this.calque_champi.objects.forEach(calque_champi => {
             this.evil = this.champi.create(calque_champi.x + 15, calque_champi.y - 16, "enemy");
         });
-
+//-------------------------------------------------------------------------------------------------------------------
 
         // Lorsque le joueur entre dans la zone de téléportation, téléportez-le à la première carte
         this.physics.add.collider(player, teleporterZone1, () => {
@@ -261,10 +260,12 @@ class Map1Scene extends Phaser.Scene {
         function collectengrenage(player, engrenage) {
             engrenage.disableBody(true, true);
             score += 1; //augmente le score de 1
+            scoreText.setText('Score: ' + score); //met à jour l’affichage du score
 
         }
-    }
-
+        scoreText=this.add.text(365, 190,'score: 0',{fontSize:'32px',fill:'#000'});
+        //affiche un texte à l’écran, pour le score
+}
 
     //----------------------------------------------------------------------------------------------------------------------------------
 
