@@ -190,14 +190,25 @@ class Map1Scene extends Phaser.Scene {
         }, null, this);
 
         // lorsque l'ennemi est tué, il laisse tomber un objet
-        this.physics.add.collider(this.lasergroup, this.champi, function () {
-            this.champi.disableBody(true, true);
+        this.physics.add.overlap(this.lasergroup, this.champi, killchampi ,  null, this);
+        function killchampi(player,champi){
+
+            champi.disableBody(true, true);
             
             this.lasergroup.getChildren()[nombrelaser-1].destroy()
+            nombrelaser-=1
             canFire = false;
             item = this.engrenage.create(champi.x , champi.y,"item");
-        }, null, this);
-
+        }
+       
+        this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
+        
+        function collectengrenage(player, engrenage) {
+            engrenage.disableBody(true, true); 
+            score += 1; //augmente le score de 1
+          
+        }
+    
         this.physics.add.collider(this.lasergroup, murs_terra,function () {
             
             this.lasergroup.getChildren()[nombrelaser-1].destroy()
