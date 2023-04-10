@@ -5,12 +5,12 @@ var toucheE;
 var cursors;
 var gameOver;
 var collectitem;
-var nombrelaser=0;
+var nombrelaser = 0;
 var item;
 var score = 0;
-var invincible=false;
+var invincible = false;
 var laser;
-var player_health=30;
+var player_health = 30;
 var fire;
 var time;
 var fireDelay = 200;
@@ -36,10 +36,15 @@ class Map1Scene extends Phaser.Scene {
         this.load.image('laser', 'assets/laser.png');
         this.load.image('enemy', 'assets/enemy.png');
         this.load.image('item', 'assets/item.png');
-        
+        this.load.spritesheet('boulon', 'assets/boulon.png',
+        { frameWidth: 166, frameHeight: 64 });
+
+
+
+
         this.load.image('tilesetzelda', 'assets/tilesetzelda.png');
         this.load.tilemapTiledJSON("carte", "assets/mapzelda.json");
-        
+
 
     }
 
@@ -86,7 +91,7 @@ class Map1Scene extends Phaser.Scene {
             tileset
         );
 
-//------------------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------
         murs_déco.setCollisionByProperty({ solide: true });
         murs_terra.setCollisionByProperty({ solide: true });
         trou.setCollisionByProperty({ solide: true });
@@ -94,14 +99,14 @@ class Map1Scene extends Phaser.Scene {
         player.setCollideWorldBounds(false);
 
         laser = this.physics.add.sprite(1600, 800, 'laser')
-        
-      
-        this.lasergroup=this.physics.add.group()
-     
+
+
+        this.lasergroup = this.physics.add.group()
+
         toucheE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         keydash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        
-       
+
+
         this.physics.add.collider(player, murs_déco);
         this.physics.add.collider(player, murs_terra);
 
@@ -110,6 +115,8 @@ class Map1Scene extends Phaser.Scene {
         function Contacte_trou() {
             trouu = true
         }
+        this.vie = this.physics.add.sprite(365, 190, 'boulon').setScale(0.5).setScrollFactor(0);
+
 
         // redimentionnement du monde avec les dimensions calculées via tiled
         this.physics.world.setBounds(0, 0, 91204, 91204);
@@ -119,27 +126,27 @@ class Map1Scene extends Phaser.Scene {
         this.cameras.main.startFollow(player);
         this.cameras.main.zoom = 1.5;
 
-        this.engrenage= this.physics.add.group({immovable : true ,allowGravity : false});
+        this.engrenage = this.physics.add.group({ immovable: true, allowGravity: false });
         this.calque_engrenage = carteDuNiveau.getObjectLayer("engrenage");
         this.calque_engrenage.objects.forEach(calque_engrenage => {
-            this.inutile = this.engrenage.create(calque_engrenage.x+15,calque_engrenage.y-16,"item"); 
+            this.inutile = this.engrenage.create(calque_engrenage.x + 15, calque_engrenage.y - 16, "item");
         });
 
 
 
-        this.champi= this.physics.add.group({immovable : true ,allowGravity : false});
+        this.champi = this.physics.add.group({ immovable: true, allowGravity: false });
         this.calque_champi = carteDuNiveau.getObjectLayer("champi");
         this.calque_champi.objects.forEach(calque_champi => {
-            this.evil = this.champi.create(calque_champi.x+15,calque_champi.y-16,"enemy");
+            this.evil = this.champi.create(calque_champi.x + 15, calque_champi.y - 16, "enemy");
         });
-       
+
 
         // Lorsque le joueur entre dans la zone de téléportation, téléportez-le à la première carte
         this.physics.add.collider(player, teleporterZone1, () => {
             this.scene.start('Map2Scene', { x: 2100, y: 1100 });
         });
 
-//----------------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------------
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('perso', { start: 0, end: 3 }),
@@ -172,10 +179,34 @@ class Map1Scene extends Phaser.Scene {
 
 
         cursors = this.input.keyboard.createCursorKeys();
-
-//------------------------------------------------------------------------------------------------------
-
         
+        
+        
+        
+            this.anims.create({
+                key: 'vie_3',
+                frames: this.anims.generateFrameNumbers('boulon', { start: 2, end: 2 }),
+                frameRate: 1,
+                repeat: -1
+            });
+
+            this.anims.create({
+            key: 'vie_2',
+            frames: this.anims.generateFrameNumbers('boulon', { start: 1, end: 1 }),
+            frameRate: 1,
+            repeat: -1
+            });
+
+            this.anims.create({
+            key: 'vie_1',
+            frames: this.anims.generateFrameNumbers('boulon', { start: 0, end: 0 }),
+            frameRate: 1,
+            repeat: -1
+            });
+
+        //------------------------------------------------------------------------------------------------------
+
+
         this.physics.add.collider(this.champi, murs_terra,);
         this.physics.add.collider(player, this.champi, function () {
             if (invincible == false) {
@@ -190,114 +221,131 @@ class Map1Scene extends Phaser.Scene {
         }, null, this);
 
         // lorsque l'ennemi est tué, il laisse tomber un objet
-        this.physics.add.overlap(this.lasergroup, this.champi, killchampi ,  null, this);
-        function killchampi(player,champi){
+        this.physics.add.overlap(this.lasergroup, this.champi, killchampi, null, this);
+        function killchampi(player, champi) {
 
             champi.disableBody(true, true);
-            
-            this.lasergroup.getChildren()[nombrelaser-1].destroy()
-            nombrelaser-=1
+
+            this.lasergroup.getChildren()[nombrelaser - 1].destroy()
+            nombrelaser -= 1
             canFire = false;
-            item = this.engrenage.create(champi.x , champi.y,"item");
+            item = this.engrenage.create(champi.x, champi.y, "item");
         }
-       
+
         this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
-        
+
         function collectengrenage(player, engrenage) {
-            engrenage.disableBody(true, true); 
+            engrenage.disableBody(true, true);
             score += 1; //augmente le score de 1
-          
+
         }
-    
-        this.physics.add.collider(this.lasergroup, murs_terra,function () {
-            
-            this.lasergroup.getChildren()[nombrelaser-1].destroy()
-            nombrelaser-=1
-            
-            
+
+        this.physics.add.collider(this.lasergroup, murs_terra, function () {
+
+            this.lasergroup.getChildren()[nombrelaser - 1].destroy()
+            nombrelaser -= 1
+
+
         }, null, this);
 
 
 
-        
+
         this.physics.add.overlap(player, this.engrenage, collectengrenage, null, this); // récupération de l'item engrenage 
-        
+
         function collectengrenage(player, engrenage) {
-            engrenage.disableBody(true, true); 
+            engrenage.disableBody(true, true);
             score += 1; //augmente le score de 1
-          
+
         }
     }
 
 
-//----------------------------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------------------
 
 
-update() {
-    if (gameOver) { return; }
+    update() {
 
-    if (score == 15) {
-        trou_debloque = true
-    }
-    if (trou_debloque == true) {
-        if (trouu == true) {
-            if (keydash.isDown) {
-                dash = true;
-                collide_trou.active = false;
-                setTimeout(() => {
-                    collide_trou.active = true;
-                    dash = false
-                }, 500);
+     
+        if (player_health == 30) {
+            this.vie.anims.play("vie_3", true);
+        }
+        if (player_health == 20) {
+            this.vie.anims.play("vie_2", true);
+        }
+        if (player_health == 10) {
+            this.vie.anims.play("vie_1", true);
+        }
+        if (player_health == 0) {
+            this.scene.start('Gameover')
+        }
+
+        if (gameOver) { return; }
+
+        if (score == 15) {
+            trou_debloque = true
+        }
+        if (trou_debloque == true) {
+            if (trouu == true) {
+                if (keydash.isDown) {
+                    dash = true;
+                    collide_trou.active = false;
+                    setTimeout(() => {
+                        collide_trou.active = true;
+                        dash = false
+                    }, 500);
+                }
             }
         }
-    }
-    if (cursors.left.isDown) { //si la touche gauche est appuyée
-        player.setVelocityX(-160); //alors vitesse négative en X 
-        player.anims.play('left', true); //et animation => gauche
-        if (dash == true) {
-            player.setVelocityX(-300)
+        if (cursors.left.isDown) { //si la touche gauche est appuyée
+            player.setVelocityX(-160); //alors vitesse négative en X 
+            player.anims.play('left', true); //et animation => gauche
+            if (dash == true) {
+                player.setVelocityX(-300)
+            }
         }
-    }
-    else if (cursors.right.isDown) { //sinon si la touche droite est appuyée
-        player.setVelocityX(160); //alors vitesse positive en X
-        player.anims.play('right', true); //et animation => droite
-        if (dash == true) {
-            player.setVelocityX(300)
+        else if (cursors.right.isDown) { //sinon si la touche droite est appuyée
+            player.setVelocityX(160); //alors vitesse positive en X
+            player.anims.play('right', true); //et animation => droite
+            if (dash == true) {
+                player.setVelocityX(300)
+            }
+
+
+        }
+        else if (cursors.down.isDown) {
+            player.setVelocityY(160);
+            player.anims.play('down', true); //et animation => descend
+            if (dash == true) {
+                player.setVelocityY(300)
+            }
+
+
+        }
+        else if (cursors.up.isDown) {
+            player.setVelocityY(-160);
+            player.anims.play('up', true); //et animation => haut
+            if (dash == true) {
+                player.setVelocityY(-300)
+            }
+
+
+        }
+        else { // sinon
+            player.setVelocityX(0); //vitesse nulle
+            player.setVelocityY(0)
+            player.anims.play('turn'); //animation fait face caméra
         }
 
 
-    }
-    else if (cursors.down.isDown) {
-        player.setVelocityY(160);
-        player.anims.play('down', true); //et animation => descend
-        if (dash == true) {
-            player.setVelocityY(300)
+
+
+        if (player_health == 0 || player_health <= 0) {
+            this.physics.pause()
+            this.scene.start('gameover');
         }
 
 
-    }
-    else if (cursors.up.isDown) {
-        player.setVelocityY(-160);
-        player.anims.play('up', true); //et animation => haut
-        if (dash == true) {
-            player.setVelocityY(-300)
-        }
-
-
-    }
-    else { // sinon
-        player.setVelocityX(0); //vitesse nulle
-        player.setVelocityY(0)
-        player.anims.play('turn'); //animation fait face caméra
-    }
-
-
-
-   
-  if(player_health==0||player_health<=0){
-    this.physics.pause()
-    this.scene.start('gameover' );
-  } 
 
 
 
@@ -305,45 +353,43 @@ update() {
 
 
 
+        // faire s'approcher l'ennemi du joueur si le joueur est à moins de 150 pixels de l'ennemi
 
 
-    // faire s'approcher l'ennemi du joueur si le joueur est à moins de 150 pixels de l'ennemi
+        this.champi.getChildren().forEach(champi => {
+            const distance = Phaser.Math.Distance.Between(champi.x, champi.y, player.x, player.y);
+            if (distance < 150) {
+                champi.setVelocity(player.x - champi.x, player.y - champi.y);
+            } else {
+                champi.setVelocity(0);
+            }
+        });
 
-
-    this.champi.getChildren().forEach(champi => {
-        const distance = Phaser.Math.Distance.Between(champi.x, champi.y, player.x, player.y);
-        if (distance < 150) {
-          champi.setVelocity(player.x - champi.x, player.y - champi.y);
-        } else {
-          champi.setVelocity(0);
-        }
-      });
-    
 
         //le joueur tire des lasers dans toutes les directions 
         var time = this.time.now;
 
-     if(toucheE.isDown && time > lastFired && ( cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown )) {
-        
-        nombrelaser+=1
-        if (cursors.left.isDown) {
-            this.lasergroup.create(player.x,player.y,"laser").body.velocity.x = -500;
-          
-        } else if (cursors.right.isDown) {
-            this.lasergroup.create(player.x,player.y,"laser").body.velocity.x = 500;
-          
-        } else if (cursors.up.isDown) {
-            this.lasergroup.create(player.x,player.y,"laser").setVelocityY(-500).angle = -90;
-          
-        
-        } else if (cursors.down.isDown) {
-            this.lasergroup.create(player.x,player.y,"laser").setVelocityY(500).angle = -90;
-          
-          
+        if (toucheE.isDown && time > lastFired && (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown)) {
+
+            nombrelaser += 1
+            if (cursors.left.isDown) {
+                this.lasergroup.create(player.x, player.y, "laser").body.velocity.x = -500;
+
+            } else if (cursors.right.isDown) {
+                this.lasergroup.create(player.x, player.y, "laser").body.velocity.x = 500;
+
+            } else if (cursors.up.isDown) {
+                this.lasergroup.create(player.x, player.y, "laser").setVelocityY(-500).angle = -90;
+
+
+            } else if (cursors.down.isDown) {
+                this.lasergroup.create(player.x, player.y, "laser").setVelocityY(500).angle = -90;
+
+
+            }
+
+            lastFired = time + fireDelay;
         }
-    
-        lastFired = time + fireDelay;
-      }
 
     }
 
